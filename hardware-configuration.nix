@@ -12,13 +12,18 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/D5C8-E94B";
+      fsType = "vfat";
+    };
+
+  boot.initrd.luks.devices."root".device = "/dev/disk/by-uuid/a4471078-f37e-4193-be8a-bd25bf83347d";
+
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/899a6b0b-db4a-4715-b9e9-f14e1dce9b20";
       fsType = "btrfs";
       options = [ "subvol=__active/root" "autodefrag" "compress=lzo" "noatime" "nodiratime" "discard" ];
     };
-
-  boot.initrd.luks.devices."root".device = "/dev/disk/by-uuid/a4471078-f37e-4193-be8a-bd25bf83347d";
 
   fileSystems."/home" =
     { device = "/dev/disk/by-uuid/899a6b0b-db4a-4715-b9e9-f14e1dce9b20";
@@ -26,11 +31,10 @@
       options = [ "subvol=__active/home" "autodefrag" "compress=lzo" "noatime" "nodiratime" "discard" ];
     };
 
-  # boot.initrd.luks.devices."root".device = "/dev/disk/by-uuid/a4471078-f37e-4193-be8a-bd25bf83347d";
-
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/D5C8-E94B";
-      fsType = "vfat";
+  fileSystems."/media/btrfs" =
+    { device = "/dev/disk/by-uuid/899a6b0b-db4a-4715-b9e9-f14e1dce9b20";
+      fsType = "btrfs";
+      options = [ "subvolid=0" "autodefrag" "compress=lzo" "noatime" "nodiratime" "discard" ];
     };
 
   swapDevices =
