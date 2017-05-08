@@ -10,27 +10,16 @@
       ./hardware-configuration.nix
     ];
 
-  # # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-# # For steam
-# nixpkgs.config.allowUnfree = true;
-
-  # boot = {
-  #   loader.systemd-boot.enable = true;
-  #   loader.efi.canTouchEfiVariables = true;
-  #   extraModprobeConfig = ''
-  #     options thinkpad_acpi fan_control=1
-  #     '';
-  #   # initrd.luks.devices = [ { name = "luksroot"; device = "/dev/sda3";
-  #   #   allowDiscards = true; } ];
-  #  };
-
-  # boot.initrd.luks.devices = [{
-  #   name = "crypto_root"; device = "/dev/disk/by-uuid/899a6b0b-db4a-4715-b9e9-f14e1dce9b20";
-  #   allowDiscards = true;
-  # }];
+  boot = {
+    # Use the systemd-boot EFI boot loader.
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+#     initrd.luks.devices = [{
+#     	name = "crypto_root";
+# 	device = "/dev/disk/by-uuid/899a6b0b-db4a-4715-b9e9-f14e1dce9b20";
+#     	allowDiscards = true;
+# 	}];
+   };
 
   networking.hostName = "josekit470"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -49,37 +38,28 @@
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages = with pkgs; [
-    acpitool
-    cpufrequtils
-    cryptsetup
-    dmenu
-    hdparm
-    colordiff
-    gimp
-    nmap
-    parted
-    netcat
-    vlc
-    mpv
-    rxvt_unicode
-    w3m
-    ranger
-    blender
-    xclip
-    wgetpaste
-    pavucontrol
-    lxqt.pavucontrol-qt
-    steam
+    # Font
     nerdfonts
-    curl
-    stow
     # term
     neofetch
     cowsay
     ponysay
-    wget
+    colordiff
+    rxvt_unicode
+    xclip
+    # Search
     ag
     ripgrep
+    # Terminal Multiplexer
+    tmux
+    screen
+    # Network
+    wget
+    curl
+    nmap
+    wgetpaste
+    netcat
+    rtorrent
     # shell
     zsh
     # Editor
@@ -88,6 +68,7 @@
     emacs
     # Dev
     git
+    gitAndTools.git-extras
     tig
     # Mail
     notmuch
@@ -100,14 +81,30 @@
     iotop
     htop
     powertop
+    nethogs
     # Browser
     firefox
     chromium
+    w3m
+    ranger
+    ncdu
     # Gui
     pcmanfm
     darktable
     gimp
     libreoffice
+    pavucontrol
+    blender
+    gimp
+    # Video
+    vlc
+    mpv
+    # WM
+    dmenu
+    slock
+    # Games
+    cockatrice
+    steam
     # Virtualisation
     virtualbox
     qemu
@@ -118,6 +115,11 @@
     winetricks
     # System
     sshfs-fuse
+    acpitool
+    cpufrequtils
+    cryptsetup
+    hdparm
+    parted
   ];
 
   nixpkgs.config = {
@@ -140,16 +142,16 @@
     zsh.enable = true;
   };
 
-    hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.enable = true;
   # per user is broken (for me?)
-hardware.pulseaudio.systemWide = true;
+  hardware.pulseaudio.systemWide = true;
 
-  nix.extraOptions = ''
-    auto-optimise-store = true
-    env-keep-derivations = true
-    gc-keep-outputs = true
-    gc-keep-derivations = true
-  '';
+  # nix.extraOptions = ''
+  #   auto-optimise-store = true
+  #   env-keep-derivations = true
+  #   gc-keep-outputs = true
+  #   gc-keep-derivations = true
+  # '';
   # nix.useChroot = true;
 
   # powerManagement.cpuFreqGovernor = "ondemand";
