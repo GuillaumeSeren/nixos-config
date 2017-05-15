@@ -9,7 +9,7 @@
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [ "kvm-intel" "coretemp" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/boot" =
@@ -42,5 +42,5 @@
     ];
 
   nix.maxJobs = lib.mkDefault 4;
-  powerManagement.cpuFreqGovernor = "powersave";
+  # powerManagement.cpuFreqGovernor = "powersave";
 }
