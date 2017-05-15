@@ -11,15 +11,23 @@
     ];
 
   boot = {
-    # Use the systemd-boot EFI boot loader.
-    loader.systemd-boot.enable = true;
-    loader.efi.canTouchEfiVariables = true;
-#     initrd.luks.devices = [{
-#     	name = "crypto_root";
-# 	device = "/dev/disk/by-uuid/899a6b0b-db4a-4715-b9e9-f14e1dce9b20";
-#     	allowDiscards = true;
-# 	}];
-   };
+    loader = {
+      # Use the systemd-boot EFI boot loader.
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+
+    kernel.sysctl = {
+      # "vm.dirty_writeback_centisecs" = 1500;
+      # "vm.drop_caches" = 3;
+      "vm.laptop_mode" = 5;
+      "vm.swappiness" = 1;
+    };
+
+    # extraModprobeConfig = ''
+    #   options thinkpad_acpi fan_control=1
+    # '';
+  };
 
   networking.hostName = "josekit470"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -47,6 +55,7 @@
     colordiff
     rxvt_unicode
     xclip
+    weechat
     # Search
     ag
     ripgrep
@@ -62,6 +71,8 @@
     rtorrent
     # shell
     zsh
+    # Linter
+    shellcheck
     # Editor
     vim
     neovim
@@ -70,9 +81,14 @@
     git
     gitAndTools.git-extras
     tig
+    subversion
+    pijul
     # Mail
     notmuch
     alot
+    offlineimap
+    python35Packages.afew
+    astroid
     # Music
     mpd
     ncmpcpp
@@ -102,6 +118,7 @@
     # WM
     dmenu
     slock
+    redshift
     # Games
     cockatrice
     steam
@@ -120,6 +137,8 @@
     cryptsetup
     hdparm
     parted
+    lm_sensors
+    tlp
   ];
 
   nixpkgs.config = {
@@ -135,6 +154,10 @@
       netbeans = false;
       ftNixSupport = true;
     };
+    # Whitelisting
+    permittedInsecurePackages = [
+      "webkitgtk-2.4.11"
+    ];
   };
 
   programs = {
@@ -142,54 +165,80 @@
     zsh.enable = true;
   };
 
-  hardware.pulseaudio.enable = true;
-  # per user is broken (for me?)
-  hardware.pulseaudio.systemWide = true;
+  virtualisation = {
+    docker = {
+      enable = true;
+      storageDriver = "btrfs";
+    };
 
-  # nix.extraOptions = ''
-  #   auto-optimise-store = true
-  #   env-keep-derivations = true
-  #   gc-keep-outputs = true
-  #   gc-keep-derivations = true
-  # '';
-  # nix.useChroot = true;
+    virtualbox.host.enable = true;
+  };
 
-  # powerManagement.cpuFreqGovernor = "ondemand";
-  # powerManagement.enable = true;
-  #powerManagement.aggressive = true;
-
-  # # Virtualisation
-  # virtualisation.docker.enable = true;
-  # virtualisation.virtualbox.host.enable = true;
+  hardware = {
+    pulseaudio = {
+      enable = true;
+      # per user is broken (for me?)
+      systemWide = true;
+    };
+    trackpoint = {
+      enable = true;
+      sensitivity = 255;
+    };
+  };
 
   # List services that you want to enable:
+  services = {
+    # ctrl+alt+F8 open manual in a term
+    nixosManual.showManual = true;
 
-  # ctrl+alt+F8 open manual in a term
-  services.nixosManual.showManual = true;
+    # Enable CUPS to print documents.
+    printing.enable = true;
 
-  # @TODO:
-  # services.thinkfan.enable = true;
+    # thinkfan.enable = true;
+    tlp = {
+	    enable = true;
+	    extraConfig = ''
+		    START_CHARGE_THRESH_BAT0=75
+		    STOP_CHARGE_THRESH_BAT0=90
+		    START_CHARGE_THRESH_BAT1=75
+		    STOP_CHARGE_THRESH_BAT1=90
+		    '';
+    };
 
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+    xserver = {
+      # Enable the X11 windowing system.
+      enable = true;
+      layout = "us";
+      xkbOptions = "eurosign:e, caps:escape";
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+      # Enable the KDE Desktop Environment.
+      displayManager.sddm.enable = true;
+      desktopManager.plasma5.enable = true;
 
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
+      # Touchpad
+      synaptics = {
+        enable = true;
+        tapButtons = false;
+        twoFingerScroll = true;
+      };
+    };
+    # redshift = {
+    #   enable = true;
+    #   latitude = "48";
+    #   longitude = "11";
+    #   temperature = {
+    #     day = 3500;
+    #     night = 3500;
+    #   };
+    #   brightness = {
+    #     day = "1.0";
+    #     night = "0.7";
+    #   };
+    # };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-  services.xserver.layout = "us";
-  services.xserver.xkbOptions = "eurosign:e, caps:escape";
-
-  # Enable the KDE Desktop Environment.
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
+    upower.enable = true;
+    urxvtd.enable = true;
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.extraUsers.gseren = {
@@ -198,9 +247,6 @@
     uid = 1000;
     extraGroups = [ "wheel" "networkmanager" "vboxuser" "docker" "audio" ];
   };
-  
-  services.xserver.synaptics.enable = true;
-  services.xserver.synaptics.twoFingerScroll = true;
 
   # The NixOS release to be compatible with for stateful data such as databases.
   system.stateVersion = "17.09";
