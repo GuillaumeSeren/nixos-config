@@ -29,9 +29,11 @@
     # '';
   };
 
-  networking.hostName = "josekit470"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;
+  networking = {
+    hostName = "josekit470"; # Define your hostname.
+    # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+    networkmanager.enable = true;
+  };
 
   # Select internationalisation properties.
   i18n = {
@@ -154,6 +156,7 @@
       netbeans = false;
       ftNixSupport = true;
     };
+
     # Whitelisting
     permittedInsecurePackages = [
       "webkitgtk-2.4.11"
@@ -222,19 +225,16 @@
         twoFingerScroll = true;
       };
     };
-    # redshift = {
-    #   enable = true;
-    #   latitude = "48";
-    #   longitude = "11";
-    #   temperature = {
-    #     day = 3500;
-    #     night = 3500;
-    #   };
-    #   brightness = {
-    #     day = "1.0";
-    #     night = "0.7";
-    #   };
-    # };
+
+    redshift = {
+      enable = true;
+      latitude = "48";
+      longitude = "11";
+      temperature = {
+        day = 3500;
+        night = 3500;
+      };
+    };
 
     upower.enable = true;
     urxvtd.enable = true;
