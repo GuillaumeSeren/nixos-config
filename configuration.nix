@@ -161,6 +161,15 @@
     permittedInsecurePackages = [
       "webkitgtk-2.4.11"
     ];
+    wine = {
+      release = "staging"; # "stable", "unstable", "staging"
+        build = "wineWow"; # "wine32", "wine64", "wineWow"
+        pulseaudioSupport = true;
+      override = {
+        wineBuild = "wineWow";
+        wineRelease = "staging";
+        };
+    };
   };
 
   programs = {
