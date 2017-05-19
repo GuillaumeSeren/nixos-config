@@ -10,6 +10,7 @@
       ./hardware-configuration.nix
     ];
 
+  # Use the systemd-boot EFI boot loader.
   boot = {
     loader = {
       # Use the systemd-boot EFI boot loader.
@@ -58,6 +59,10 @@
     rxvt_unicode
     xclip
     weechat
+    xdotool
+    xorg.xkbcomp
+    xorg.xinput
+    mailsend
     # Search
     ag
     ripgrep
@@ -130,7 +135,8 @@
     docker
     rkt
     packer
-    wineStaging
+    # wineStaging
+    wine
     winetricks
     # System
     sshfs-fuse
@@ -141,8 +147,10 @@
     parted
     lm_sensors
     tlp
+    fail2ban
   ];
 
+  # Configure package options
   nixpkgs.config = {
     allowUnfree = true;
 
@@ -150,26 +158,35 @@
       enablePepperFlash = true;
       enablePepperPDF = true;
     };
-
+    
     vim = {
       python = true;
       netbeans = false;
       ftNixSupport = true;
     };
-
+    
     # Whitelisting
     permittedInsecurePackages = [
       "webkitgtk-2.4.11"
     ];
+
     wine = {
       release = "staging"; # "stable", "unstable", "staging"
-        build = "wineWow"; # "wine32", "wine64", "wineWow"
-        pulseaudioSupport = true;
+      build = "wineWow"; # "wine32", "wine64", "wineWow"
+      pulseaudioSupport = true;
       override = {
         wineBuild = "wineWow";
-        wineRelease = "staging";
-        };
+	wineRelease = "staging";
+      };
     };
+    # packageOverrides = pkgs: {
+    #   wine = pkgs.stdenv.lib.overrideDerivation pkgs.wine (oldAttrs : {
+    #     wineBuild = "wineWow";
+    #     wineRelease = "unstable";
+    #     pulseaudioSupport=true;
+    #     configureFlags = [ "--enable-win64" "--with-alsa" "--with-pulse" ];
+    #   });
+    # };
   };
 
   programs = {
@@ -216,6 +233,9 @@
 		    STOP_CHARGE_THRESH_BAT1=90
 		    '';
     };
+
+    # Enable CUPS to print documents.
+    printing.enable = true;
 
     xserver = {
       # Enable the X11 windowing system.
