@@ -7,7 +7,7 @@
 {
   imports =
     [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
+    ./hardware-configuration.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -19,8 +19,8 @@
     };
 
     kernel.sysctl = {
-      # "vm.dirty_writeback_centisecs" = 1500;
-      # "vm.drop_caches" = 3;
+    # "vm.dirty_writeback_centisecs" = 1500;
+    # "vm.drop_caches" = 3;
       "vm.laptop_mode" = 5;
       "vm.swappiness" = 1;
     };
@@ -62,7 +62,8 @@
     xdotool
     xorg.xkbcomp
     xorg.xinput
-    mailsend
+    ranger
+    ncdu
     # Search
     ag
     ripgrep
@@ -109,14 +110,14 @@
     firefox
     chromium
     w3m
-    ranger
-    ncdu
-    # Gui
     pcmanfm
+    # Gui
+    pavucontrol
+    # Office
+    libreoffice
+    # Images
     darktable
     gimp
-    libreoffice
-    pavucontrol
     blender
     gimp
     # Video
@@ -147,8 +148,7 @@
     parted
     lm_sensors
     tlp
-    fail2ban
-  ];
+      ];
 
   # Configure package options
   nixpkgs.config = {
@@ -158,13 +158,13 @@
       enablePepperFlash = true;
       enablePepperPDF = true;
     };
-    
+
     vim = {
       python = true;
       netbeans = false;
       ftNixSupport = true;
     };
-    
+
     # Whitelisting
     permittedInsecurePackages = [
       "webkitgtk-2.4.11"
@@ -172,13 +172,14 @@
 
     wine = {
       release = "staging"; # "stable", "unstable", "staging"
-      build = "wineWow"; # "wine32", "wine64", "wineWow"
-      pulseaudioSupport = true;
+        build = "wineWow"; # "wine32", "wine64", "wineWow"
+        pulseaudioSupport = true;
       override = {
         wineBuild = "wineWow";
-	wineRelease = "staging";
+        wineRelease = "staging";
       };
     };
+
     # packageOverrides = pkgs: {
     #   wine = pkgs.stdenv.lib.overrideDerivation pkgs.wine (oldAttrs : {
     #     wineBuild = "wineWow";
@@ -220,18 +221,15 @@
     # ctrl+alt+F8 open manual in a term
     nixosManual.showManual = true;
 
-    # Enable CUPS to print documents.
-    printing.enable = true;
-
     # thinkfan.enable = true;
     tlp = {
-	    enable = true;
-	    extraConfig = ''
-		    START_CHARGE_THRESH_BAT0=75
-		    STOP_CHARGE_THRESH_BAT0=90
-		    START_CHARGE_THRESH_BAT1=75
-		    STOP_CHARGE_THRESH_BAT1=90
-		    '';
+      enable = true;
+      extraConfig = ''
+        START_CHARGE_THRESH_BAT0=75
+        STOP_CHARGE_THRESH_BAT0=90
+        START_CHARGE_THRESH_BAT1=75
+        STOP_CHARGE_THRESH_BAT1=90
+        '';
     };
 
     # Enable CUPS to print documents.
@@ -257,11 +255,11 @@
 
     redshift = {
       enable = true;
-      latitude = "48";
-      longitude = "11";
+      latitude = "47.08";
+      longitude = "2.39";
       temperature = {
-        day = 3500;
-        night = 3500;
+        day = 3700;
+        night = 3600;
       };
     };
 
